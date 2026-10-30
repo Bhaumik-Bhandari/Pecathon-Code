@@ -1,0 +1,6 @@
+{
+  "summary":  "Implementation plan to create the standalone SkyViewRadar component (frontend/src/components/features/skyview/SkyViewRadar.jsx) querying NASA SkyView across 4 spectral surveys (DSS, 2MASS-J, RASS-Inband, NVSS) in a 2x2 grid with per-card loading/error telemetry states, and route it in App.jsx and Sidebar.",
+  "updatedAt":  "2026-10-30T02:56:21.604311304Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

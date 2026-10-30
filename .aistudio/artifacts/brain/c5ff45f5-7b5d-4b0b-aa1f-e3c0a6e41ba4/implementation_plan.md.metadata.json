@@ -1,0 +1,6 @@
+{
+  "summary":  "Implementation plan to clean up Spirit Lens frontend copy, remove internal engine/failover disclosures, simplify astrometric metrics to 3 user-facing cards (Detected Sources, Brightness, Size), and fix overlapping orbital graphics in the top celestial expedition scene.",
+  "updatedAt":  "2026-10-30T01:29:39.177284258Z",
+  "requestFeedback":  true,
+  "userFacing":  true
+}

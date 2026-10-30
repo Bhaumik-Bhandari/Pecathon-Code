@@ -1,0 +1,948 @@
+
+/* ============================================================
+   PECFEST 2026 — A MYSTIC MIKADO
+   Full-screen image + centred glassmorphism authentication
+   File: frontend/src/pages/Login.css
+   ============================================================ */
+
+.mk-login-page {
+  --mk-ink: #09131c;
+  --mk-paper: #f7f1e7;
+  --mk-muted: #c4c5c0;
+  --mk-gold: #dfbb79;
+  --mk-vermilion: #d9503d;
+
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  min-height: 100vh;
+  min-height: 100svh;
+  place-items: center;
+  padding: 28px 20px;
+  overflow-x: hidden;
+  background: var(--mk-ink);
+  color: var(--mk-paper);
+  font-family: "DM Sans", sans-serif;
+  box-sizing: border-box;
+}
+
+.mk-login-page *,
+.mk-login-page *::before,
+.mk-login-page *::after {
+  box-sizing: border-box;
+}
+
+/* ============================================================
+   FULL-SCREEN BACKGROUND IMAGE
+   Expected path: frontend/public/images/Login.png
+
+   100% 100% stretches the complete image to the viewport.
+   This prevents cropping at the edges, although the image
+   may look slightly stretched if its aspect ratio differs.
+   No backdrop blur is applied outside the card.
+   ============================================================ */
+
+.mk-login-backdrop {
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  background-color: var(--mk-ink);
+
+  background-image:
+    linear-gradient(
+      115deg,
+      rgba(4, 11, 19, 0.22) 0%,
+      rgba(4, 11, 19, 0.08) 48%,
+      rgba(4, 11, 19, 0.24) 100%
+    ),
+    url("/images/Login.png");
+
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+
+  pointer-events: none;
+}
+
+/* ============================================================
+   CENTRED GLASS CARD
+   Blur happens HERE only, over the image behind the card.
+   ============================================================ */
+
+.mk-login-card {
+  position: relative;
+  z-index: 1;
+  width: min(440px, 30vw);
+  min-width: 340px;
+  max-width: 100%;
+  overflow: hidden;
+
+  border: 1px solid rgba(247, 241, 231, 0.3);
+  border-radius: 20px;
+
+  /* Transparent glass, not an opaque solid panel. */
+  background: linear-gradient(
+    145deg,
+    rgba(24, 39, 49, 0.46),
+    rgba(7, 16, 25, 0.58)
+  );
+
+  -webkit-backdrop-filter: blur(22px) saturate(145%);
+  backdrop-filter: blur(22px) saturate(145%);
+
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.36),
+    0 8px 24px rgba(0, 0, 0, 0.17),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  animation: mk-card-enter 650ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+
+  transition:
+    border-color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.mk-login-card:hover {
+  border-color: rgba(223, 187, 121, 0.48);
+
+  box-shadow:
+    0 34px 100px rgba(0, 0, 0, 0.42),
+    0 0 32px rgba(223, 187, 121, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.17);
+}
+
+/* Fine golden edge at the top of the glass */
+
+.mk-login-card::before {
+  position: absolute;
+  top: 0;
+  right: 12%;
+  left: 12%;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(223, 187, 121, 0.8),
+    transparent
+  );
+
+  content: "";
+  pointer-events: none;
+}
+
+/* Small decorative glow INSIDE the card.
+   It does not blur or modify the outside background. */
+
+.mk-login-card-glow {
+  position: absolute;
+  top: -100px;
+  right: -95px;
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+
+  background: rgba(223, 187, 121, 0.1);
+  filter: blur(65px);
+
+  pointer-events: none;
+}
+
+.mk-login-card-content {
+  position: relative;
+  z-index: 1;
+  padding: 30px 32px 25px;
+  transform-origin: center;
+}
+
+/* ============================================================
+   TRANSITIONS BETWEEN SIGN-IN / SIGN-UP / FORGOT PASSWORD
+
+   Login.jsx changes the data-view key when the view changes.
+   This animation plays each time the new content is rendered.
+   ============================================================ */
+
+.mk-login-card-content[data-view="signin"] {
+  --mk-view-accent: rgba(223, 187, 121, 0.12);
+}
+
+.mk-login-card-content[data-view="signup"] {
+  --mk-view-accent: rgba(217, 80, 61, 0.1);
+}
+
+.mk-login-card-content[data-view="forgot"] {
+  --mk-view-accent: rgba(158, 172, 152, 0.11);
+}
+
+.mk-login-card-content[data-view] {
+  animation: mk-view-enter 360ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes mk-card-enter {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes mk-view-enter {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================================
+   PECFEST BRAND
+   ============================================================ */
+
+.mk-login-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 13px;
+  margin-bottom: 27px;
+}
+
+.mk-login-brand-mark {
+  position: relative;
+  display: grid;
+  width: 47px;
+  height: 47px;
+  flex: 0 0 auto;
+  place-items: center;
+
+  border: 1px solid rgba(223, 187, 121, 0.82);
+  border-radius: 50%;
+
+  color: var(--mk-gold);
+  font-family: "Manrope", sans-serif;
+  font-size: 25px;
+  font-weight: 800;
+}
+
+.mk-login-brand-mark::before {
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(223, 187, 121, 0.36);
+  border-radius: 50%;
+  content: "";
+}
+
+.mk-login-brand-sparkle {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  color: var(--mk-gold);
+}
+
+.mk-login-brand-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mk-login-brand-name {
+  color: var(--mk-paper);
+  font-family: "Manrope", sans-serif;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 4px;
+}
+
+.mk-login-brand-subtitle {
+  color: var(--mk-gold);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+}
+
+/* ============================================================
+   HEADINGS
+   ============================================================ */
+
+.mk-login-card-heading {
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.mk-login-card-kicker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin: 0 0 13px;
+
+  color: var(--mk-gold);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.1px;
+}
+
+.mk-login-kicker-line {
+  width: 20px;
+  height: 1px;
+  background: rgba(223, 187, 121, 0.72);
+}
+
+.mk-login-card-heading h1 {
+  margin: 0;
+  color: var(--mk-paper);
+
+  font-family: "Manrope", sans-serif;
+  font-size: clamp(27px, 2.3vw, 34px);
+  font-weight: 700;
+  line-height: 1.28;
+  letter-spacing: -1.1px;
+
+  overflow-wrap: anywhere;
+}
+
+.mk-login-title-accent {
+  color: var(--mk-gold);
+  font-family: Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.mk-login-card-description {
+  margin: 10px 0 0;
+  color: rgba(247, 241, 231, 0.86);
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* ============================================================
+   GOOGLE SIGN-IN BUTTON
+   ============================================================ */
+
+.mk-login-google {
+  position: relative;
+  display: flex;
+  width: 100%;
+  min-height: 48px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+
+  padding: 0 37px;
+
+  border: 1px solid rgba(247, 241, 231, 0.27);
+  border-radius: 9px;
+
+  background: rgba(247, 241, 231, 0.08);
+  color: var(--mk-paper);
+
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+
+  transition:
+    background 200ms ease,
+    border-color 200ms ease,
+    transform 200ms ease;
+}
+
+.mk-login-google:hover {
+  transform: translateY(-2px);
+  border-color: rgba(247, 241, 231, 0.5);
+  background: rgba(247, 241, 231, 0.14);
+}
+
+.mk-login-google:active {
+  transform: translateY(0);
+}
+
+.mk-login-google-icon {
+  width: 17px;
+  height: 17px;
+  flex: 0 0 auto;
+}
+
+.mk-login-google-arrow {
+  position: absolute;
+  right: 13px;
+  color: rgba(247, 241, 231, 0.7);
+
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.mk-login-google:hover .mk-login-google-arrow {
+  transform: translateX(3px);
+  color: var(--mk-gold);
+}
+
+/* ============================================================
+   EMAIL DIVIDER
+   ============================================================ */
+
+.mk-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin: 21px 0;
+}
+
+.mk-login-divider span {
+  height: 1px;
+  flex: 1;
+  background: rgba(247, 241, 231, 0.2);
+}
+
+.mk-login-divider p {
+  margin: 0;
+  color: rgba(247, 241, 231, 0.76);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1.1px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   FORM LAYOUT
+   ============================================================ */
+
+.mk-login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.mk-login-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mk-login-label {
+  color: rgba(247, 241, 231, 0.94);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+}
+
+.mk-login-input-wrap {
+  position: relative;
+  display: block;
+}
+
+.mk-login-input-icon {
+  position: absolute;
+  top: 50%;
+  left: 13px;
+  transform: translateY(-50%);
+  color: rgba(247, 241, 231, 0.68);
+  pointer-events: none;
+}
+
+.mk-login-input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  height: 47px;
+
+  padding: 0 14px;
+
+  border: 1px solid rgba(247, 241, 231, 0.25);
+  border-radius: 8px;
+  outline: none;
+
+  background: rgba(5, 13, 21, 0.32);
+  color: var(--mk-paper);
+
+  font-family: inherit;
+  font-size: 13px;
+
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.mk-login-input-with-icon {
+  padding-left: 41px;
+}
+
+.mk-login-input::placeholder {
+  color: rgba(247, 241, 231, 0.6);
+  opacity: 1;
+}
+
+.mk-login-input:hover {
+  border-color: rgba(247, 241, 231, 0.4);
+}
+
+.mk-login-input:focus {
+  border-color: var(--mk-gold);
+  background: rgba(5, 13, 21, 0.48);
+  box-shadow: 0 0 0 3px rgba(223, 187, 121, 0.12);
+}
+
+.mk-login-input:-webkit-autofill,
+.mk-login-input:-webkit-autofill:hover,
+.mk-login-input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--mk-paper);
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* ============================================================
+   PASSWORD VISIBILITY BUTTON
+   ============================================================ */
+
+.mk-login-password-wrap {
+  position: relative;
+  display: block;
+}
+
+.mk-login-password-input {
+  padding-right: 48px;
+}
+
+.mk-login-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+
+  display: grid;
+  width: 35px;
+  height: 35px;
+  place-items: center;
+
+  transform: translateY(-50%);
+
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: rgba(247, 241, 231, 0.76);
+
+  cursor: pointer;
+
+  transition:
+    color 180ms ease,
+    background 180ms ease;
+}
+
+.mk-login-password-toggle:hover {
+  background: rgba(247, 241, 231, 0.1);
+  color: var(--mk-gold);
+}
+
+/* ============================================================
+   REMEMBER ME / FORGOT PASSWORD
+   ============================================================ */
+
+.mk-login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: -1px;
+}
+
+.mk-login-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+
+  color: rgba(247, 241, 231, 0.86);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.mk-login-remember input {
+  width: 15px;
+  height: 15px;
+  flex: 0 0 auto;
+  margin: 0;
+  accent-color: var(--mk-vermilion);
+  cursor: pointer;
+}
+
+.mk-login-terms {
+  align-items: flex-start;
+}
+
+.mk-login-terms input {
+  margin-top: 3px;
+}
+
+.mk-login-text-link {
+  color: var(--mk-gold);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 180ms ease;
+}
+
+.mk-login-text-link:hover {
+  color: #ffe4af;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ============================================================
+   FORM STATUS MESSAGES
+   ============================================================ */
+
+.mk-login-status {
+  margin: 0;
+  padding: 11px 12px;
+
+  border: 1px solid rgba(223, 187, 121, 0.38);
+  border-radius: 8px;
+
+  background: rgba(223, 187, 121, 0.11);
+  color: #ffe4af;
+
+  font-size: 12px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+/* ============================================================
+   PRIMARY ACTION BUTTON
+   ============================================================ */
+
+.mk-login-submit {
+  display: flex;
+  width: 100%;
+  min-height: 49px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+
+  padding: 0 15px;
+
+  border: 1px solid rgba(238, 125, 102, 0.6);
+  border-radius: 8px;
+
+  background: linear-gradient(
+    110deg,
+    #c94735 0%,
+    #df5843 55%,
+    #bc3e31 100%
+  );
+
+  color: #fffaf2;
+  cursor: pointer;
+
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  box-shadow:
+    0 7px 20px rgba(169, 54, 39, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    filter 200ms ease;
+}
+
+.mk-login-submit span {
+  flex: 1;
+  text-align: left;
+}
+
+.mk-login-submit:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+
+  box-shadow:
+    0 11px 26px rgba(169, 54, 39, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.mk-login-submit:active {
+  transform: translateY(0);
+}
+
+/* Consistent keyboard focus */
+
+.mk-login-google:focus-visible,
+.mk-login-submit:focus-visible,
+.mk-login-password-toggle:focus-visible,
+.mk-login-text-link:focus-visible,
+.mk-login-signup a:focus-visible {
+  outline: 2px solid var(--mk-gold);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   SIGN-UP / SIGN-IN SWITCH
+   ============================================================ */
+
+.mk-login-signup {
+  margin: 21px 0 0;
+
+  color: rgba(247, 241, 231, 0.86);
+  font-size: 12px;
+  line-height: 1.8;
+  text-align: center;
+}
+
+.mk-login-signup a {
+  color: var(--mk-gold);
+  font-weight: 700;
+  text-decoration: none;
+
+  transition:
+    color 180ms ease,
+    text-decoration-color 180ms ease;
+}
+
+.mk-login-signup a:hover {
+  color: #ffe4af;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+/* ============================================================
+   DECORATIVE CARD FOOTER
+   ============================================================ */
+
+.mk-login-card-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.mk-login-card-bottom p {
+  margin: 0;
+
+  color: rgba(247, 241, 231, 0.69);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+.mk-login-bottom-line {
+  width: 16px;
+  height: 1px;
+  flex: 0 0 auto;
+  background: rgba(223, 187, 121, 0.52);
+}
+
+.mk-login-footer-symbol {
+  color: var(--mk-vermilion);
+  font-size: 13px;
+}
+
+/* ============================================================
+   TABLETS AND SMALL LAPTOPS
+   ============================================================ */
+
+@media (min-width: 761px) and (max-width: 1130px) {
+  .mk-login-card {
+    width: min(420px, 42vw);
+    min-width: 340px;
+  }
+
+  .mk-login-card-content {
+    padding: 26px 25px 23px;
+  }
+
+  .mk-login-card-heading h1 {
+    font-size: 29px;
+  }
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 760px) {
+  .mk-login-page {
+    padding: 24px 16px;
+  }
+
+  .mk-login-backdrop {
+    /* Still displays the entire image, stretched to viewport. */
+    background-size: 100% 100%;
+
+    background-image:
+      linear-gradient(
+        130deg,
+        rgba(4, 11, 19, 0.25),
+        rgba(4, 11, 19, 0.17)
+      ),
+      url("/images/Login.png");
+  }
+
+  .mk-login-card {
+    width: min(100%, 430px);
+    min-width: 0;
+    border-radius: 18px;
+  }
+
+  .mk-login-card-content {
+    padding: 27px clamp(20px, 6vw, 30px) 23px;
+  }
+
+  .mk-login-brand {
+    margin-bottom: 24px;
+  }
+
+  .mk-login-card-heading h1 {
+    font-size: clamp(27px, 7vw, 33px);
+  }
+
+  .mk-login-card-description {
+    font-size: 13px;
+  }
+
+  .mk-login-input {
+    height: 47px;
+    font-size: 13px;
+  }
+
+  .mk-login-google,
+  .mk-login-submit {
+    min-height: 48px;
+  }
+}
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 380px) {
+  .mk-login-page {
+    padding: 16px 11px;
+  }
+
+  .mk-login-card-content {
+    padding: 23px 17px 20px;
+  }
+
+  .mk-login-brand {
+    margin-bottom: 21px;
+  }
+
+  .mk-login-brand-mark {
+    width: 42px;
+    height: 42px;
+  }
+
+  .mk-login-brand-name {
+    font-size: 14px;
+    letter-spacing: 3px;
+  }
+
+  .mk-login-brand-subtitle {
+    font-size: 8px;
+    letter-spacing: 1.3px;
+  }
+
+  .mk-login-card-heading h1 {
+    font-size: 26px;
+  }
+
+  .mk-login-divider {
+    gap: 7px;
+  }
+
+  .mk-login-divider p {
+    font-size: 7px;
+    letter-spacing: 0.7px;
+  }
+
+  .mk-login-options {
+    column-gap: 7px;
+  }
+
+  .mk-login-remember,
+  .mk-login-text-link {
+    font-size: 10px;
+  }
+
+  .mk-login-card-bottom {
+    gap: 6px;
+  }
+
+  .mk-login-card-bottom p {
+    font-size: 7px;
+    letter-spacing: 0.65px;
+  }
+}
+
+/* ============================================================
+   SHORT SCREENS
+   Preserve centring while allowing the page to scroll if
+   the sign-up form is taller than the viewport.
+   ============================================================ */
+
+@media (max-height: 700px) {
+  .mk-login-page {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+
+  .mk-login-card-content {
+    padding-top: 21px;
+    padding-bottom: 19px;
+  }
+
+  .mk-login-brand {
+    margin-bottom: 18px;
+  }
+
+  .mk-login-card-heading {
+    margin-bottom: 17px;
+  }
+
+  .mk-login-divider {
+    margin-top: 15px;
+    margin-bottom: 15px;
+  }
+
+  .mk-login-form {
+    gap: 13px;
+  }
+
+  .mk-login-card-bottom {
+    margin-top: 16px;
+  }
+}
+
+/* ============================================================
+   REDUCED MOTION ACCESSIBILITY
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .mk-login-card,
+  .mk-login-card-content[data-view] {
+    animation: none;
+  }
+
+  .mk-login-page *,
+  .mk-login-page *::before,
+  .mk-login-page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
