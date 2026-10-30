@@ -1,6 +1,0 @@
-{
-  "summary":  "Implementation plan for the Spirit Lens Dual-Engine AI Architecture, including the local FastAPI DnCNN + DAOStarFinder engine, automatic 6-second cloud-to-local fallback client, and interactive Spirit Lens Dojo workspace components.",
-  "updatedAt":  "2026-10-30T00:46:36.189410116Z",
-  "requestFeedback":  true,
-  "userFacing":  true
-}
